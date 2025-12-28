@@ -15,11 +15,14 @@
 
 <ion-content class="ion-padding">
   
-  <ion-item>
+<ion-item>
     <ion-label position="floating">Enter Ingredients</ion-label>
-    <ion-input [(ngModel)]="ingredients" placeholder="carrots,beef,potatoes"></ion-input>
+    <ion-input 
+      [(ngModel)]="ingredients" 
+      placeholder="carrots,beef,potatoes"
+      (keyup.enter)="search()"> </ion-input>
   </ion-item>
-
+  
   <ion-button expand="block" (click)="search()" class="ion-margin-top ion-margin-bottom">
     SEARCH
   </ion-button>
