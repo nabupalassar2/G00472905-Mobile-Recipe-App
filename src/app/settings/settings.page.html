@@ -1,5 +1,9 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+
     <ion-title>Settings</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -7,7 +11,6 @@
 <ion-content class="ion-padding">
   <ion-item>
     <ion-label>Enable US Units (cups/lb)</ion-label>
-    
     <ion-toggle
         [checked]="!isMetric"
         (ionChange)="onUnitsChanged($event)">
