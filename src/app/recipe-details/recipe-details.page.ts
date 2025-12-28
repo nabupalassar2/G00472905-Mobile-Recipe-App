@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RecipeService } from '../services/recipe.service';
 import { 
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, 
-  IonBackButton, IonList, IonItem, IonLabel, // IonImg удален отсюда
+  IonBackButton, IonList, IonItem, IonLabel, 
   IonButton, IonIcon, IonSpinner 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -18,11 +18,11 @@ import { heart, heartOutline } from 'ionicons/icons';
   standalone: true,
   imports: [
     CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, 
-    IonContent, IonButtons, IonBackButton, IonList, // IonImg удален отсюда
+    IonContent, IonButtons, IonBackButton, IonList, 
     IonItem, IonLabel, IonButton, IonIcon, IonSpinner
   ]
 })
-export class RecipeDetailsPage implements OnInit {
+export class RecipeDetailsPage {
   recipe: any = null;
   isMetric: boolean = true;
   isFavourite: boolean = false;
@@ -36,27 +36,36 @@ export class RecipeDetailsPage implements OnInit {
     addIcons({ heart, 'heart-outline': heartOutline });
   }
 
-  ngOnInit() {
+  // IMPORTANT: Using ionViewWillEnter to ensure settings are reloaded every time
+  ionViewWillEnter() {
     const id = this.route.snapshot.paramMap.get('id');
+    
+    // Read settings every time the view is entered
     const savedUnit = localStorage.getItem('unitsMetric');
+    // Logic: if explicitly 'false', then it is US. Otherwise (null or 'true') it is Metric.
     this.isMetric = savedUnit === 'false' ? false : true;
 
     this.loadFavourites();
 
     if (id) {
-      this.isLoading = true;
-      this.recipeService.getRecipeDetails(id).subscribe({
-        next: (data: any) => {
-          this.recipe = data;
-          this.checkIfFavourite();
-          this.isLoading = false;
-        },
-        error: (err: any) => {
-          console.error('Error loading recipe details', err);
-          this.isLoading = false;
-        },
-      });
+      // Always reload recipe to ensure data consistency
+      this.loadRecipe(id);
     }
+  }
+
+  loadRecipe(id: string) {
+    this.isLoading = true;
+    this.recipeService.getRecipeDetails(id).subscribe({
+      next: (data: any) => {
+        this.recipe = data;
+        this.checkIfFavourite();
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        console.error('Error loading recipe details', err);
+        this.isLoading = false;
+      },
+    });
   }
 
   toggleFavourite() {

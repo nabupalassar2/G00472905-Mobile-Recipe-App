@@ -6,10 +6,16 @@
 
 <ion-content class="ion-padding">
   <ion-item>
-    <ion-label>Units (Metric / US)</ion-label>
+    <ion-label>Enable US Units (cups/lb)</ion-label>
+    
     <ion-toggle
-        [checked]="isMetric"
+        [checked]="!isMetric"
         (ionChange)="onUnitsChanged($event)">
     </ion-toggle>
   </ion-item>
+  
+  <p class="ion-padding-start" style="color: #666; font-size: 0.9em;">
+    Toggle <strong>OFF</strong> for Metric (Standard).<br>
+    Toggle <strong>ON</strong> for US Units.
+  </p>
 </ion-content>
