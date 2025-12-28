@@ -1,17 +1,17 @@
 <ion-header>
-<ion-toolbar>
-  <ion-title>G00472905</ion-title>
+  <ion-toolbar>
+    <ion-title>G00472905</ion-title>
 
-  <ion-buttons slot="end">
-    <ion-button routerLink="/favourites">
-      <ion-icon name="heart"></ion-icon>
-    </ion-button>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleFavourite()" routerLink="/favourites">
+        <ion-icon [name]="isFavourite ? 'heart' : 'heart-outline'"></ion-icon>
+      </ion-button>
 
-    <ion-button routerLink="/settings">
-      <ion-icon name="settings"></ion-icon>
-    </ion-button>
-  </ion-buttons>
-</ion-toolbar>
+      <ion-button routerLink="/settings">
+        <ion-icon name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">

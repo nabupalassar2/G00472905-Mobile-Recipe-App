@@ -26,4 +26,17 @@ import { RouterLink } from '@angular/router';
     RouterLink,
   ],
 })
-export class HomePage {}
+export class HomePage {
+  // true = favourite exists
+  isFavourite = false;
+
+  constructor() {
+    const stored = localStorage.getItem('favourite');
+    this.isFavourite = stored === 'true';
+  }
+
+  toggleFavourite() {
+    this.isFavourite = !this.isFavourite;
+    localStorage.setItem('favourite', String(this.isFavourite));
+  }
+}
