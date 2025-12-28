@@ -1,21 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router'; // To get ID from URL
+import { ActivatedRoute } from '@angular/router';
 import { RecipeService } from '../services/recipe.service';
 import { 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
-  IonContent, 
-  IonButtons, 
-  IonBackButton, 
-  IonImg, 
-  IonList, 
-  IonItem, 
-  IonLabel, 
-  IonButton,
-  IonIcon 
+  IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, 
+  IonBackButton, IonList, IonItem, IonLabel, // IonImg удален отсюда
+  IonButton, IonIcon, IonSpinner 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { heart, heartOutline } from 'ionicons/icons';
@@ -26,27 +17,17 @@ import { heart, heartOutline } from 'ionicons/icons';
   styleUrls: ['./recipe-details.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    IonHeader, 
-    IonToolbar, 
-    IonTitle, 
-    IonContent, 
-    IonButtons, 
-    IonBackButton, 
-    IonImg, 
-    IonList, 
-    IonItem, 
-    IonLabel,
-    IonButton,
-    IonIcon
+    CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, 
+    IonContent, IonButtons, IonBackButton, IonList, // IonImg удален отсюда
+    IonItem, IonLabel, IonButton, IonIcon, IonSpinner
   ]
 })
 export class RecipeDetailsPage implements OnInit {
-  recipe: any = null; // Will hold the full recipe data
-  isMetric: boolean = true; // Default to Metric
-  isFavourite: boolean = false; // Is this recipe in favourites?
+  recipe: any = null;
+  isMetric: boolean = true;
+  isFavourite: boolean = false;
   favouriteIds: number[] = [];
+  isLoading = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -56,43 +37,35 @@ export class RecipeDetailsPage implements OnInit {
   }
 
   ngOnInit() {
-    // 1. Get the ID from the URL (route)
     const id = this.route.snapshot.paramMap.get('id');
-    
-    // 2. Check User Settings (Metric vs US)
     const savedUnit = localStorage.getItem('unitsMetric');
-    // If saved is 'false', then it is US. Otherwise default to true.
     this.isMetric = savedUnit === 'false' ? false : true;
 
-    // 3. Load Favourites list
     this.loadFavourites();
 
-    // 4. Fetch Recipe Details from API
     if (id) {
+      this.isLoading = true;
       this.recipeService.getRecipeDetails(id).subscribe({
         next: (data: any) => {
           this.recipe = data;
-          // Check if this specific recipe is in the favourite list
           this.checkIfFavourite();
+          this.isLoading = false;
         },
         error: (err: any) => {
           console.error('Error loading recipe details', err);
-        }
+          this.isLoading = false;
+        },
       });
     }
   }
-
-  // --- Favourite Logic ---
 
   toggleFavourite() {
     if (!this.recipe) return;
 
     if (this.isFavourite) {
-      // Remove ID
       this.favouriteIds = this.favouriteIds.filter(id => id !== this.recipe.id);
       this.isFavourite = false;
     } else {
-      // Add ID
       this.favouriteIds.push(this.recipe.id);
       this.isFavourite = true;
     }

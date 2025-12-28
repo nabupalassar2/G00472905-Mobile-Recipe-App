@@ -7,49 +7,70 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" *ngIf="recipe">
-  
-  <ion-img [src]="recipe.image" style="border-radius: 10px; overflow: hidden; margin-bottom: 15px;"></ion-img>
+<ion-content class="ion-padding">
 
-  <h1 style="text-align: center; font-size: 1.5rem; margin-bottom: 20px;">{{ recipe.title }}</h1>
-
-  <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Ingredients</h3>
-  <ion-list lines="none">
-    <ion-item *ngFor="let ingredient of recipe.extendedIngredients">
-      <ion-img 
-        [src]="'https://spoonacular.com/cdn/ingredients_100x100/' + ingredient.image" 
-        slot="start" 
-        style="width: 50px; height: 50px; object-fit: contain;">
-      </ion-img>
-      
-      <ion-label class="ion-text-wrap">
-        <h2 style="font-weight: bold;">
-          <span *ngIf="isMetric">
-            {{ ingredient.measures.metric.amount }} {{ ingredient.measures.metric.unitLong }}
-          </span>
-          <span *ngIf="!isMetric">
-            {{ ingredient.measures.us.amount }} {{ ingredient.measures.us.unitLong }}
-          </span>
-        </h2>
-        <p>{{ ingredient.original }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
-
-  <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 20px;">Instructions</h3>
-  <div *ngIf="recipe.analyzedInstructions?.length > 0">
-    <div *ngFor="let part of recipe.analyzedInstructions">
-      <p *ngFor="let step of part.steps" style="margin-bottom: 10px;">
-        <strong>{{ step.number }}:</strong> {{ step.step }}
-      </p>
-    </div>
+  <div *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center; height: 50vh;">
+    <ion-spinner name="crescent"></ion-spinner>
   </div>
 
-  <div *ngIf="!recipe.analyzedInstructions?.length" [innerHTML]="recipe.summary"></div>
+  <div *ngIf="!isLoading && recipe">
+    
+    <div style="width: 100%; margin-bottom: 20px; border-radius: 10px; overflow: hidden; border: 1px solid #ddd;">
+      <img 
+        [src]="recipe.image" 
+        style="width: 100%; display: block; height: auto; max-height: 300px; object-fit: cover;" 
+        alt="Recipe Image"
+      />
+    </div>
 
-  <ion-button expand="block" (click)="toggleFavourite()" class="ion-margin-top" [color]="isFavourite ? 'danger' : 'primary'">
-    <ion-icon slot="start" [name]="isFavourite ? 'heart-dislike' : 'heart'"></ion-icon>
-    {{ isFavourite ? 'Remove From Favourites' : 'Add To Favourites' }}
-  </ion-button>
+    <h1 style="text-align: center; font-size: 1.5rem; margin-bottom: 20px;">
+      {{ recipe.title }}
+    </h1>
 
+    <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Ingredients</h3>
+    <ion-list lines="none">
+      <ion-item *ngFor="let ingredient of recipe.extendedIngredients">
+        <img 
+          [src]="'https://spoonacular.com/cdn/ingredients_100x100/' + ingredient.image" 
+          slot="start" 
+          style="width: 50px; height: 50px; object-fit: contain; margin-right: 15px;"
+          alt="Ingredient"
+        />
+        
+        <ion-label class="ion-text-wrap">
+          <h2 style="font-weight: bold;">
+            <span *ngIf="isMetric">
+              {{ ingredient.measures.metric.amount }} {{ ingredient.measures.metric.unitLong }}
+            </span>
+            <span *ngIf="!isMetric">
+              {{ ingredient.measures.us.amount }} {{ ingredient.measures.us.unitLong }}
+            </span>
+          </h2>
+          <p>{{ ingredient.original }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 20px;">Instructions</h3>
+    
+    <div *ngIf="recipe.analyzedInstructions?.length > 0" style="margin-top: 10px;">
+      <div *ngFor="let part of recipe.analyzedInstructions">
+        <p *ngFor="let step of part.steps" style="margin-bottom: 15px; line-height: 1.5;">
+          <strong>Step {{ step.number }}:</strong> {{ step.step }}
+        </p>
+      </div>
+    </div>
+
+    <div *ngIf="!recipe.analyzedInstructions?.length" [innerHTML]="recipe.summary" style="margin-top: 10px; line-height: 1.5;"></div>
+
+    <ion-button 
+      expand="block" 
+      (click)="toggleFavourite()" 
+      class="ion-margin-top ion-margin-bottom" 
+      [color]="isFavourite ? 'danger' : 'primary'">
+      <ion-icon slot="start" [name]="isFavourite ? 'heart-dislike' : 'heart'"></ion-icon>
+      {{ isFavourite ? 'Remove From Favourites' : 'Add To Favourites' }}
+    </ion-button>
+
+  </div>
 </ion-content>
