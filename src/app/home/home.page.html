@@ -1,10 +1,11 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>G00472905</ion-title>
 
     <ion-buttons slot="end">
-      <ion-button (click)="toggleFavourite()" routerLink="/favourites">
-        <ion-icon [name]="isFavourite ? 'heart' : 'heart-outline'"></ion-icon>
+      <!-- Общее сердце: пустое если избранного нет, полное если есть -->
+      <ion-button routerLink="/favourites">
+        <ion-icon [name]="hasAnyFavourites ? 'heart' : 'heart-outline'"></ion-icon>
       </ion-button>
 
       <ion-button routerLink="/settings">
@@ -15,5 +16,14 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <h2>Home</h2>
+  <ion-list>
+    <ion-item *ngFor="let r of recipes">
+      <ion-label>{{ r.title }}</ion-label>
+
+      <!-- Сердце конкретного рецепта -->
+      <ion-button slot="end" (click)="toggleFavourite(r.id)">
+        <ion-icon [name]="isFavourite(r.id) ? 'heart' : 'heart-outline'"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
 </ion-content>

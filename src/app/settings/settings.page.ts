@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   IonHeader,
   IonToolbar,
@@ -13,21 +15,25 @@ import {
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonToggle],
+  imports: [
+    CommonModule, 
+    FormsModule,
+    IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonToggle
+  ],
 })
 export class SettingsPage {
-  // true = Metric, false = US
   isMetric = true;
 
   constructor() {
     const saved = localStorage.getItem('unitsMetric');
+    // Если в памяти ничего нет, по умолчанию true (Metric)
     if (saved !== null) {
       this.isMetric = saved === 'true';
     }
   }
 
   onUnitsChanged(ev: any) {
-    this.isMetric = !!ev.detail.checked;
+    this.isMetric = ev.detail.checked;
     localStorage.setItem('unitsMetric', String(this.isMetric));
   }
 }

@@ -1,15 +1,25 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+
     <ion-title>Favourites</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-text *ngIf="isFavourite">
-    ❤️ You have a favourite recipe
-  </ion-text>
-
-  <ion-text *ngIf="!isFavourite">
+  <div *ngIf="favouriteRecipes.length === 0" style="text-align: center; margin-top: 20px;">
     No favourites yet
-  </ion-text>
+  </div>
+
+  <ion-list *ngIf="favouriteRecipes.length > 0">
+    <ion-item *ngFor="let r of favouriteRecipes">
+      <ion-label>{{ r.title }}</ion-label>
+
+      <ion-button slot="end" (click)="removeFromFavourites(r.id)">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
 </ion-content>
