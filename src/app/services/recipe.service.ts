@@ -6,14 +6,13 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RecipeService {
-  // API Key from the project requirements
+  // API Key 
   private apiKey = '70759a4f7911402abcc53d3c51d3b759'; 
   private baseUrl = 'https://api.spoonacular.com/recipes';
 
   constructor(private http: HttpClient) { }
 
   // 1. Search recipes by ingredients
-  // Parameters: query and apiKey
   searchRecipes(ingredients: string): Observable<any> {
     const url = `${this.baseUrl}/complexSearch?query=${ingredients}&apiKey=${this.apiKey}&number=10`;
     return this.http.get(url);

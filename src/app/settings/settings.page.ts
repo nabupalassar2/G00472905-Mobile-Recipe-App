@@ -2,13 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonItem,
-  IonLabel,
-  IonToggle,
+  IonHeader, IonToolbar, IonTitle, IonContent, 
+  IonItem, IonLabel, IonToggle,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -16,17 +11,17 @@ import {
   templateUrl: './settings.page.html',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonToggle
+    CommonModule, FormsModule, IonHeader, IonToolbar, 
+    IonTitle, IonContent, IonItem, IonLabel, IonToggle
   ],
 })
 export class SettingsPage {
+  // true = Metric, false = US
   isMetric = true;
 
   constructor() {
     const saved = localStorage.getItem('unitsMetric');
-    // Если в памяти ничего нет, по умолчанию true (Metric)
+    // If not saved, default to true (Metric)
     if (saved !== null) {
       this.isMetric = saved === 'true';
     }
