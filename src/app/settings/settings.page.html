@@ -7,6 +7,9 @@
 <ion-content class="ion-padding">
   <ion-item>
     <ion-label>Units (Metric / US)</ion-label>
-    <ion-toggle></ion-toggle>
+    <ion-toggle
+        [checked]="isMetric"
+        (ionChange)="onUnitsChanged($event)">
+    </ion-toggle>
   </ion-item>
 </ion-content>
