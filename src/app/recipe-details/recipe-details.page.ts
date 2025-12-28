@@ -95,4 +95,9 @@ export class RecipeDetailsPage {
       this.isFavourite = this.favouriteIds.includes(this.recipe.id);
     }
   }
+  
+  changeUnits() {
+    this.isMetric = !this.isMetric;
+    localStorage.setItem('unitsMetric', String(this.isMetric));
+  }
 }
