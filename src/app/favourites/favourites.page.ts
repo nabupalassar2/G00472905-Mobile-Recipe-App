@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { trash } from 'ionicons/icons';
+import { forkJoin } from 'rxjs'; // Import forkJoin
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonList, 
   IonItem, IonLabel, IonButtons, IonBackButton, IonButton, 
-  IonIcon, IonThumbnail, IonImg
+  IonIcon, IonThumbnail, IonImg, IonSpinner // Added IonSpinner
 } from '@ionic/angular/standalone';
 import { RecipeService } from '../services/recipe.service';
 
@@ -18,7 +19,7 @@ import { RecipeService } from '../services/recipe.service';
   imports: [
     CommonModule, RouterLink, IonHeader, IonToolbar, IonTitle, 
     IonContent, IonList, IonItem, IonLabel, IonButtons, 
-    IonBackButton, IonButton, IonIcon, IonThumbnail, IonImg
+    IonBackButton, IonButton, IonIcon, IonThumbnail, IonImg, IonSpinner
   ],
 })
 export class FavouritesPage {
@@ -40,20 +41,29 @@ export class FavouritesPage {
 
     if (ids.length > 0) {
       this.isLoading = true;
-      ids.forEach(id => {
-        this.recipeService.getRecipeDetails(id.toString()).subscribe({
-          next: (data) => {
-            this.favouriteRecipes.push(data);
-          },
-          error: (err) => console.error(err)
-        });
+      
+      // Create an array of Observables (requests)
+      const requests = ids.map(id => this.recipeService.getRecipeDetails(id.toString()));
+
+      // forkJoin waits for ALL requests to complete
+      forkJoin(requests).subscribe({
+        next: (results: any[]) => {
+          this.favouriteRecipes = results;
+          this.isLoading = false; // Only stop loading when EVERYTHING is ready
+        },
+        error: (err) => {
+          console.error('Error loading favourites', err);
+          this.isLoading = false;
+        }
       });
+
+    } else {
       this.isLoading = false;
     }
   }
 
   removeFromFavourites(id: number): void {
-    // Remove from local array
+    // Remove from local UI list immediately
     this.favouriteRecipes = this.favouriteRecipes.filter(r => r.id !== id);
     
     // Update LocalStorage

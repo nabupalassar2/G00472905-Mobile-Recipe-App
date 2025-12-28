@@ -9,12 +9,17 @@
 
 <ion-content class="ion-padding">
   
-  <div *ngIf="favouriteRecipes.length === 0" style="text-align: center; margin-top: 50px; color: #888;">
+  <div *ngIf="isLoading" style="text-align: center; margin-top: 20px;">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading your favourites...</p>
+  </div>
+
+  <div *ngIf="!isLoading && favouriteRecipes.length === 0" style="text-align: center; margin-top: 50px; color: #888;">
     <h3>No favourites yet</h3>
     <p>Go back and find something tasty!</p>
   </div>
 
-  <ion-list>
+  <ion-list *ngIf="!isLoading && favouriteRecipes.length > 0">
     <ion-item *ngFor="let r of favouriteRecipes">
       
       <ion-thumbnail slot="start">

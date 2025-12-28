@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { heart, heartOutline, settings } from 'ionicons/icons';
+import { heart, heartOutline, settings, alertCircle } from 'ionicons/icons'; // Added alertCircle icon
 import {
   IonHeader,
   IonToolbar,
@@ -16,6 +16,8 @@ import {
   IonItem,
   IonLabel,
   IonInput,
+  IonSpinner, // Added
+  IonText,    // Added
 } from '@ionic/angular/standalone';
 import { RecipeService } from '../services/recipe.service'; 
 
@@ -39,18 +41,23 @@ import { RecipeService } from '../services/recipe.service';
     IonItem,
     IonLabel,
     IonInput,
+    IonSpinner, // Added to imports
+    IonText,    // Added to imports
   ],
 })
 export class HomePage {
   ingredients: string = '';
   recipes: any[] = [];
   favouriteIds: number[] = [];
+  
+  // New state variables
+  isLoading: boolean = false;
+  errorMessage: string = '';
 
   constructor(private recipeService: RecipeService) {
-    addIcons({ heart, 'heart-outline': heartOutline, settings });
+    addIcons({ heart, 'heart-outline': heartOutline, settings, 'alert-circle': alertCircle });
   }
 
-  // Reload favourites every time the view is entered
   ionViewWillEnter(): void {
     this.loadFavourites();
   }
@@ -58,12 +65,25 @@ export class HomePage {
   search() {
     if (!this.ingredients.trim()) return;
 
+    // Reset state before search
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.recipes = [];
+
     this.recipeService.searchRecipes(this.ingredients).subscribe({
       next: (data: any) => {
         this.recipes = data.results;
+        this.isLoading = false; // Stop loading
+        
+        // Optional: Show message if no recipes found
+        if (this.recipes.length === 0) {
+          this.errorMessage = 'No recipes found for these ingredients.';
+        }
       },
       error: (err: any) => {
         console.error('Error fetching recipes', err);
+        this.isLoading = false; // Stop loading even on error
+        this.errorMessage = 'Failed to load recipes. Please check your internet or try again later.';
       }
     });
   }
