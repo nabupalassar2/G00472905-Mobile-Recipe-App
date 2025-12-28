@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; // RouterLink убрали отсюда
 import { addIcons } from 'ionicons';
 import { trash } from 'ionicons/icons';
 import {
@@ -21,12 +20,12 @@ type Recipe = { id: number; title: string };
 
 @Component({
   selector: 'app-favourites',
-  templateUrl: './favourites.page.html', // <--- ВАЖНО: ссылка на свой HTML
+  templateUrl: './favourites.page.html',
   styleUrls: ['./favourites.page.scss'],
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
+    // RouterLink убрали отсюда тоже
     IonHeader,
     IonToolbar,
     IonTitle,

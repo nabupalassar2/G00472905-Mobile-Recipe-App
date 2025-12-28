@@ -3,11 +3,10 @@
     <ion-title>G00472905</ion-title>
 
     <ion-buttons slot="end">
-      <!-- Общее сердце: пустое если избранного нет, полное если есть -->
       <ion-button routerLink="/favourites">
         <ion-icon [name]="hasAnyFavourites ? 'heart' : 'heart-outline'"></ion-icon>
       </ion-button>
-
+      
       <ion-button routerLink="/settings">
         <ion-icon name="settings"></ion-icon>
       </ion-button>
@@ -16,14 +15,32 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-list>
-    <ion-item *ngFor="let r of recipes">
-      <ion-label>{{ r.title }}</ion-label>
+  
+  <ion-item>
+    <ion-label position="floating">Enter Ingredients</ion-label>
+    <ion-input [(ngModel)]="ingredients" placeholder="carrots,beef,potatoes"></ion-input>
+  </ion-item>
 
-      <!-- Сердце конкретного рецепта -->
-      <ion-button slot="end" (click)="toggleFavourite(r.id)">
-        <ion-icon [name]="isFavourite(r.id) ? 'heart' : 'heart-outline'"></ion-icon>
-      </ion-button>
+  <ion-button expand="block" (click)="search()" class="ion-margin-top ion-margin-bottom">
+    SEARCH
+  </ion-button>
+
+  <ion-list>
+    <ion-item *ngFor="let r of recipes" lines="none" class="recipe-item">
+      <div style="width: 100%; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px; overflow: hidden;">
+        
+        <img [src]="r.image" style="width: 100%; height: 200px; object-fit: cover;" />
+        
+        <div style="padding: 10px;">
+          <h2 style="font-size: 1.1em; font-weight: bold;">{{ r.title }}</h2>
+          
+          <ion-button size="small" [routerLink]="['/recipe-details', r.id]" style="margin-top: 10px;">
+            DETAILS
+          </ion-button>
+        </div>
+
+      </div>
     </ion-item>
   </ion-list>
+
 </ion-content>
