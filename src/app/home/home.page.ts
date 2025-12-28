@@ -16,8 +16,7 @@ import {
   IonItem,
   IonLabel,
   IonInput,
-  IonSpinner, // Added
-  IonText,    // Added
+  IonSpinner,
 } from '@ionic/angular/standalone';
 import { RecipeService } from '../services/recipe.service'; 
 
@@ -42,7 +41,7 @@ import { RecipeService } from '../services/recipe.service';
     IonLabel,
     IonInput,
     IonSpinner, // Added to imports
-    IonText,    // Added to imports
+
   ],
 })
 export class HomePage {
