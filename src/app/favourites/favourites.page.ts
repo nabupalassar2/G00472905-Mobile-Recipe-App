@@ -1,22 +1,14 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // RouterLink убрали отсюда
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { trash } from 'ionicons/icons';
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonButtons,
-  IonBackButton,
-  IonButton,
-  IonIcon,
+  IonHeader, IonToolbar, IonTitle, IonContent, IonList, 
+  IonItem, IonLabel, IonButtons, IonBackButton, IonButton, 
+  IonIcon, IonThumbnail, IonImg
 } from '@ionic/angular/standalone';
-
-type Recipe = { id: number; title: string };
+import { RecipeService } from '../services/recipe.service';
 
 @Component({
   selector: 'app-favourites',
@@ -24,48 +16,50 @@ type Recipe = { id: number; title: string };
   styleUrls: ['./favourites.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    // RouterLink убрали отсюда тоже
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonButtons,
-    IonBackButton,
-    IonButton,
-    IonIcon,
+    CommonModule, RouterLink, IonHeader, IonToolbar, IonTitle, 
+    IonContent, IonList, IonItem, IonLabel, IonButtons, 
+    IonBackButton, IonButton, IonIcon, IonThumbnail, IonImg
   ],
 })
 export class FavouritesPage {
-  allRecipes: Recipe[] = [
-    { id: 1, title: 'Chicken Soup' },
-    { id: 2, title: 'Pasta Carbonara' },
-    { id: 3, title: 'Greek Salad' },
-  ];
+  favouriteRecipes: any[] = [];
+  isLoading = false;
 
-  favouriteIds: number[] = [];
-  favouriteRecipes: Recipe[] = [];
-
-  constructor() {
+  constructor(private recipeService: RecipeService) {
     addIcons({ trash });
   }
 
   ionViewWillEnter(): void {
     this.loadFavourites();
-    this.favouriteRecipes = this.allRecipes.filter(r => this.favouriteIds.includes(r.id));
+  }
+
+  loadFavourites() {
+    this.favouriteRecipes = [];
+    const raw = localStorage.getItem('favouriteIds');
+    const ids = raw ? (JSON.parse(raw) as number[]) : [];
+
+    if (ids.length > 0) {
+      this.isLoading = true;
+      ids.forEach(id => {
+        this.recipeService.getRecipeDetails(id.toString()).subscribe({
+          next: (data) => {
+            this.favouriteRecipes.push(data);
+          },
+          error: (err) => console.error(err)
+        });
+      });
+      this.isLoading = false;
+    }
   }
 
   removeFromFavourites(id: number): void {
-    this.favouriteIds = this.favouriteIds.filter(x => x !== id);
-    localStorage.setItem('favouriteIds', JSON.stringify(this.favouriteIds));
-    this.favouriteRecipes = this.allRecipes.filter(r => this.favouriteIds.includes(r.id));
-  }
-
-  private loadFavourites(): void {
+    // Remove from local array
+    this.favouriteRecipes = this.favouriteRecipes.filter(r => r.id !== id);
+    
+    // Update LocalStorage
     const raw = localStorage.getItem('favouriteIds');
-    this.favouriteIds = raw ? (JSON.parse(raw) as number[]) : [];
+    let ids = raw ? (JSON.parse(raw) as number[]) : [];
+    ids = ids.filter(x => x !== id);
+    localStorage.setItem('favouriteIds', JSON.stringify(ids));
   }
 }
